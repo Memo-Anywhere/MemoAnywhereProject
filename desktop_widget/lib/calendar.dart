@@ -15,8 +15,8 @@ class _CalendarState extends State<Calendar> {
     return Scaffold(
       body: MonthView(
         useAvailableVerticalSpace: true, // Avoid clipping
-        onCellTap: (events, date) {
-          _showDailySchedule(context, events, date);
+        onCellTap: (events, date, offset) {
+          _showDailySchedule(context, events, date, offset);
         },
       ),
     );
@@ -30,16 +30,23 @@ class _CalendarState extends State<Calendar> {
   }
 
   void _showDailySchedule(BuildContext context,
-      List<CalendarEventData<Object?>> events, DateTime date) {
+      List<CalendarEventData<Object?>> events, DateTime date, Offset offset) {
     final RenderBox overlay =
         Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    final RelativeRect position = RelativeRect.fromLTRB(
+      offset.dx,
+      offset.dy,
+      MediaQuery.of(context).size.width - offset.dx,
+      MediaQuery.of(context).size.height - offset.dy,
+    );
 
     String weekdayDate = _formatDate(date);
 
     showMenu(
       context: context,
       //문제있음, 고정 위치가 아니라 탭한 위치에 떠야 하지만 탭한 위치 알아낼 방법 못 찾음. GestureDetector 사용시 onCellTap과 겹쳐서 문제 생기고 onCellTap 안 쓰자니 events 전달 방법이 애매함.
-      position: RelativeRect.fromLTRB(300, 300, 300, 300),
+      position: position,
       items: [
         PopupMenuItem(
           child: Row(
