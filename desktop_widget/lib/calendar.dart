@@ -1,5 +1,6 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({Key? key}) : super(key: key);
@@ -9,51 +10,44 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-  Offset? _tapPosition; // 터치 위치를 저장할 변수
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GestureDetector(
-        onTapDown: (TapDownDetails details) {
-          setState(() {
-            _tapPosition = details.globalPosition;
-            print(_tapPosition);
-          });
+      body: MonthView(
+        useAvailableVerticalSpace: true, // Avoid clipping
+        onCellTap: (events, date) {
+          _showDailySchedule(context, events, date);
         },
-        child: MonthView(
-          useAvailableVerticalSpace: true, // 화면 안 잘리게
-          onCellTap: (events, date) {
-            if (_tapPosition != null) {
-              _showDailySchedule(context, events, date, _tapPosition!);
-            }
-          },
-        ),
       ),
     );
   }
 
+  // DateTime date를 2024-08-19 15:30:15.123456 형식에서 8.19(월) 형식으로 가공하는 함수
+  String _formatDate(DateTime date) {
+    String formattedDate = DateFormat('M.d').format(date);
+    String weekday = DateFormat('E', 'ko').format(date);
+    return "$formattedDate($weekday)";
+  }
+
   void _showDailySchedule(BuildContext context,
-      List<CalendarEventData<Object?>> events, DateTime date, Offset offset) {
+      List<CalendarEventData<Object?>> events, DateTime date) {
     final RenderBox overlay =
         Overlay.of(context).context.findRenderObject() as RenderBox;
 
+    String weekdayDate = _formatDate(date);
+
     showMenu(
       context: context,
-      position: RelativeRect.fromLTRB(
-        offset.dx,
-        offset.dy,
-        MediaQuery.of(context).size.width - offset.dx,
-        MediaQuery.of(context).size.height - offset.dy,
-      ),
+      //문제있음, 고정 위치가 아니라 탭한 위치에 떠야 하지만 탭한 위치 알아낼 방법 못 찾음. GestureDetector 사용시 onCellTap과 겹쳐서 문제 생기고 onCellTap 안 쓰자니 events 전달 방법이 애매함.
+      position: RelativeRect.fromLTRB(300, 300, 300, 300),
       items: [
         PopupMenuItem(
-          child: Text("Event Details"),
+          child: Row(
+            children: [Text('오늘의 일정'), Text(weekdayDate)],
+          ),
+        ),
+        PopupMenuItem(
+          child: Text(events[0].title),
           value: 'details',
         ),
         PopupMenuItem(
@@ -67,7 +61,6 @@ class _CalendarState extends State<Calendar> {
       ],
     ).then((value) {
       if (value != null) {
-        // 사용자가 선택한 메뉴 항목에 따라 동작 수행
         switch (value) {
           case 'details':
             _showEventDetails(context, events);
@@ -85,15 +78,15 @@ class _CalendarState extends State<Calendar> {
 
   void _showEventDetails(
       BuildContext context, List<CalendarEventData<Object?>> events) {
-    // 이벤트 상세 정보를 표시하는 로직 구현
+    // Show event details logic here
   }
 
   void _addNewEvent(BuildContext context, DateTime date) {
-    // 새로운 이벤트를 추가하는 로직 구현
+    // Add new event logic here
   }
 
   void _deleteEvent(
       BuildContext context, List<CalendarEventData<Object?>> events) {
-    // 이벤트를 삭제하는 로직 구현
+    // Delete event logic here
   }
 }

@@ -1,11 +1,14 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:window_manager/window_manager.dart';
 import 'calendar.dart';
 import 'window_options.dart';
 
 void main() async {
   // 초기화
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('ko', '');
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
 
