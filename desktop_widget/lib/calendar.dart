@@ -21,9 +21,10 @@ class _CalendarState extends State<Calendar> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: MonthView(
+        
         useAvailableVerticalSpace: true, // 잘리는 거 방지
         onCellTap: (events, date, offset) {
-          // 날짜 터치시 해당 날짜 일정 메뉴로 띄움
+          // 날짜 터치시 해당 날짜 일정 메뉴로 띄움. 체크박스로 띄워야...
           _showDailyEvent(context, events, date, offset);
         },
       ),

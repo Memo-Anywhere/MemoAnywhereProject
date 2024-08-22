@@ -14,6 +14,10 @@ void main() async {
   // 로딩 끝나기 전에 옵션 설정하는 거 방지
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
+  
+  // 현재 titleBarStyle.hidden으로 이동도 가능하게 하는 법 못 찾음
+  //   windowManager.setMovable(true); 
+  // windowManager.setResizable(true);
 
   // 창 옵션 설정(window_options.dart로)
   await setupWindowOptions();
@@ -36,4 +40,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
