@@ -19,7 +19,8 @@ dependencies:
   intl: ^0.19.0
   calendar_view:
     path: ./local_packages/flutter_calendar_view-master/
-
+  http: ^0.13.3
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
